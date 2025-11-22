@@ -3,6 +3,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import dotenv from 'dotenv';
+import kycRoutes from './routes/kyc';
+import anchorRoutes from './routes/anchor';
 
 dotenv.config();
 
@@ -32,6 +34,23 @@ app.get('/', (req, res) => {
     name: 'Spectra KYC Global API',
     version: '1.0.0',
     status: 'running',
+    endpoints: {
+      kyc: '/kyc',
+      anchors: '/anchor',
+      health: '/health',
+    },
+  });
+});
+
+// API Routes
+app.use('/kyc', kycRoutes);
+app.use('/anchor', anchorRoutes);
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    error: 'Endpoint not found',
   });
 });
 
@@ -39,6 +58,7 @@ app.get('/', (req, res) => {
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
+    success: false,
     error: process.env.NODE_ENV === 'production' ? 'Something went wrong!' : err.message,
   });
 });
@@ -46,4 +66,6 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 app.listen(PORT, () => {
   console.log(`🚀 Spectra API server running on port ${PORT}`);
   console.log(`📍 Health check: http://localhost:${PORT}/health`);
+  console.log(`📍 KYC endpoints: http://localhost:${PORT}/kyc`);
+  console.log(`📍 Anchor endpoints: http://localhost:${PORT}/anchor`);
 });
