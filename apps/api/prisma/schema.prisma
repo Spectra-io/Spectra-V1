@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(uuid())
+  stellarAccount  String   @unique
+  email           String?  @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  kycSubmission   KycSubmission?
+  credentials     Credential[]
+  anchorAccess    AnchorAccess[]
+}
+
+model KycSubmission {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id])
+
+  // Personal Info (encrypted)
+  encryptedData   Json     // Contains name, DOB, address, etc.
+  dataHash        String   // Hash for integrity
+
+  // Document References
+  documentType    String   // passport, driver_license, national_id
+  documentHash    String   // Hash of document
+  selfieHash      String   // Hash of selfie
+
+  // Verification Status
+  status          KycStatus @default(PENDING)
+  verifiedAt      DateTime?
+  rejectionReason String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum KycStatus {
+  PENDING
+  PROCESSING
+  NEEDS_INFO
+  APPROVED
+  REJECTED
+}
+
+model Credential {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+
+  type            String   // age_verification, identity_verification, aml_check
+  claims          Json     // The actual claims
+  proof           Json     // ZK proof or signature
+  issuedAt        DateTime @default(now())
+  expiresAt       DateTime
+  revoked         Boolean  @default(false)
+
+  @@index([userId, type])
+}
+
+model AnchorAccess {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  anchorId        String
+  anchor          Anchor   @relation(fields: [anchorId], references: [id])
+
+  grantedAt       DateTime @default(now())
+  lastAccessed    DateTime?
+
+  @@unique([userId, anchorId])
+}
+
+model Anchor {
+  id              String   @id @default(uuid())
+  name            String
+  domain          String   @unique
+  publicKey       String   @unique
+
+  requiredClaims  String[] // List of required credential types
+  isActive        Boolean  @default(true)
+
+  accessLogs      AnchorAccess[]
+  createdAt       DateTime @default(now())
+}
