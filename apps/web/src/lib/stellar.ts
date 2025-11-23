@@ -15,6 +15,19 @@ export class StellarService {
       network === 'testnet' ? StellarSdk.Networks.TESTNET : StellarSdk.Networks.PUBLIC;
   }
 
+  // Generate demo Stellar address for testing
+  generateDemoAddress(): string {
+    try {
+      // Generate a random keypair
+      const keypair = StellarSdk.Keypair.random();
+      // Return the public key
+      return keypair.publicKey();
+    } catch (error) {
+      console.error('Failed to generate demo address:', error);
+      throw new Error('Failed to generate demo address');
+    }
+  }
+
   // Connect wallet using Albedo
   async connectWallet(): Promise<string> {
     try {

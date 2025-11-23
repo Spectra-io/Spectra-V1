@@ -63,9 +63,9 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Spectra API server running on port ${PORT}`);
-  console.log(`📍 Health check: http://localhost:${PORT}/health`);
-  console.log(`📍 KYC endpoints: http://localhost:${PORT}/kyc`);
-  console.log(`📍 Anchor endpoints: http://localhost:${PORT}/anchor`);
+  console.log(`📍 Health check: http://192.168.0.233:${PORT}/health`);
+  console.log(`📍 KYC endpoints: http://192.168.0.233:${PORT}/kyc`);
+  console.log(`📍 Anchor endpoints: http://192.168.0.233:${PORT}/anchor`);
 });

@@ -29,16 +29,7 @@ export default function KycPage() {
     selfieImage?: string;
   }>({});
 
-  useEffect(() => {
-    if (!isConnected) {
-      toast({
-        title: 'Wallet Required',
-        description: 'Please connect your wallet to continue',
-        variant: 'destructive',
-      });
-      router.push('/');
-    }
-  }, [isConnected, router, toast]);
+  // Don't redirect immediately - let user see the page
 
   const steps = [
     { id: 'personal', name: 'Personal Info', icon: User },
@@ -92,6 +83,27 @@ export default function KycPage() {
   };
 
   const currentStepIndex = steps.findIndex(s => s.id === currentStep);
+
+  // Show connection required message if not connected
+  if (!isConnected || !publicKey) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-white flex items-center justify-center p-4">
+        <Card className="max-w-md w-full p-8 text-center">
+          <Shield className="w-16 h-16 mx-auto mb-4 text-primary-500" />
+          <h1 className="text-2xl font-bold mb-2">Wallet Connection Required</h1>
+          <p className="text-gray-600 mb-6">
+            You need to connect your wallet to access the KYC verification process.
+          </p>
+          <Button
+            onClick={() => router.push('/')}
+            className="bg-primary-500 hover:bg-primary-600 text-white w-full"
+          >
+            Go Back Home
+          </Button>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-white">

@@ -108,6 +108,7 @@ export function DocumentCapture({ onComplete }: DocumentCaptureProps) {
             ref={fileInputRef}
             type="file"
             accept="image/*"
+            capture="environment"
             onChange={handleFileUpload}
             className="hidden"
           />

@@ -38,13 +38,10 @@ export default function HomePage() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
       {/* Header */}
       <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
-                <Shield className="w-5 h-5 text-white" />
-              </div>
-              <span className="font-bold text-xl">Spectra</span>
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-14 sm:h-16">
+            <div className="flex items-center">
+              <span className="font-bold text-lg sm:text-xl">Spectra</span>
             </div>
             <WalletConnect onConnect={setIsConnected} />
           </div>
@@ -78,17 +75,17 @@ export default function HomePage() {
                 Start Verification
               </Button>
               <Button
-                onClick={() => router.push('/demo')}
+                onClick={() => router.push('/anchor/demo-a')}
                 variant="outline"
                 className="px-8 py-6 text-lg rounded-xl"
               >
-                View Demo
+                View Anchors
               </Button>
             </div>
 
             {!isConnected && (
               <p className="mt-4 text-sm text-gray-500">
-                Connect your wallet to begin verification
+                Click &quot;Demo&quot; in the top right to start
               </p>
             )}
           </motion.div>

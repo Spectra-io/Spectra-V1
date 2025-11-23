@@ -24,6 +24,7 @@ export function useStellar() {
       const key = await stellarService.connectWallet();
       setPublicKey(key);
       sessionStorage.setItem('stellarPublicKey', key);
+      sessionStorage.removeItem('stellarDemoMode');
       return key;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to connect';
@@ -34,9 +35,30 @@ export function useStellar() {
     }
   }, []);
 
+  const connectDemo = useCallback(() => {
+    setIsConnecting(true);
+    setError(null);
+
+    try {
+      // Generate a valid Stellar public key for demo
+      const demoKey = stellarService.generateDemoAddress();
+      setPublicKey(demoKey);
+      sessionStorage.setItem('stellarPublicKey', demoKey);
+      sessionStorage.setItem('stellarDemoMode', 'true');
+      return demoKey;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to connect demo';
+      setError(message);
+      throw err;
+    } finally {
+      setIsConnecting(false);
+    }
+  }, []);
+
   const disconnect = useCallback(() => {
     setPublicKey(null);
     sessionStorage.removeItem('stellarPublicKey');
+    sessionStorage.removeItem('stellarDemoMode');
   }, []);
 
   const signMessage = useCallback(
@@ -62,6 +84,7 @@ export function useStellar() {
     isConnecting,
     error,
     connect,
+    connectDemo,
     disconnect,
     signMessage,
     loadAccount,

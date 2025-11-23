@@ -70,13 +70,13 @@ export default function AnchorADemo() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
       <header className="bg-white border-b">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Building className="w-6 h-6 text-blue-500" />
-              <span className="font-bold text-xl">Anchor A - USD Services</span>
+        <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+              <Building className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 flex-shrink-0" />
+              <span className="font-bold text-sm sm:text-xl truncate">Anchor A - USD</span>
             </div>
-            <div className="text-sm text-gray-600">Powered by KYC Global</div>
+            <div className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">KYC Global</div>
           </div>
         </div>
       </header>
@@ -93,37 +93,35 @@ export default function AnchorADemo() {
             {!isVerified ? (
               <div className="space-y-6">
                 <div className="bg-purple-50 rounded-lg p-6">
-                  <div className="flex items-start gap-4">
-                    <Shield className="w-8 h-8 text-primary-500 flex-shrink-0" />
-                    <div>
-                      <h3 className="font-semibold mb-2">KYC Global Verification</h3>
-                      <p className="text-gray-600 mb-4">
-                        We use KYC Global for instant verification. If you&apos;ve already
-                        completed KYC with them, you can access our services immediately.
-                      </p>
-                      <Button
-                        onClick={verifyWithKycGlobal}
-                        disabled={isVerifying || !isConnected}
-                        className="bg-primary-500 hover:bg-primary-600"
-                      >
-                        {isVerifying ? (
-                          <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                            Verifying...
-                          </>
-                        ) : (
-                          <>
-                            <CheckCircle className="w-4 h-4 mr-2" />
-                            Verify with KYC Global
-                          </>
-                        )}
-                      </Button>
-                      {!isConnected && (
-                        <p className="text-sm text-gray-500 mt-2">
-                          Please connect your wallet first
-                        </p>
+                  <div className="flex flex-col items-center text-center">
+                    <Shield className="w-12 h-12 text-primary-500 mb-4" />
+                    <h3 className="font-semibold mb-2">KYC Global Verification</h3>
+                    <p className="text-gray-600 mb-4">
+                      We use KYC Global for instant verification. If you&apos;ve already
+                      completed KYC with them, you can access our services immediately.
+                    </p>
+                    <Button
+                      onClick={verifyWithKycGlobal}
+                      disabled={isVerifying || !isConnected}
+                      className="bg-primary-500 hover:bg-primary-600"
+                    >
+                      {isVerifying ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                          Verifying...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          Verify with KYC Global
+                        </>
                       )}
-                    </div>
+                    </Button>
+                    {!isConnected && (
+                      <p className="text-sm text-gray-500 mt-2">
+                        Please connect your wallet first
+                      </p>
+                    )}
                   </div>
                 </div>
 

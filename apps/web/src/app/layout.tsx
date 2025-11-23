@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { ToastProvider } from '@/components/ui/toast';
+import { MobileOnlyWrapper } from '@/components/mobile-only-wrapper';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,7 +21,9 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body className={`${inter.className} h-full bg-gray-50`}>
         <ToastProvider>
-          <div className="min-h-full">{children}</div>
+          <MobileOnlyWrapper>
+            <div className="min-h-full">{children}</div>
+          </MobileOnlyWrapper>
         </ToastProvider>
       </body>
     </html>
