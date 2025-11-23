@@ -166,7 +166,7 @@ export function PersonalInfoForm({ onComplete }: PersonalInfoProps) {
             className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
           >
             <option value="passport">Passport</option>
-            <option value="driver_license">Driver's License</option>
+            <option value="driver_license">Driver&apos;s License</option>
             <option value="national_id">National ID</option>
           </select>
         </div>
