@@ -295,7 +295,7 @@ export class KycService {
     };
 
     // Create signature over claims
-    const dataToSign = JSON.stringify({ type, claims, ...proofData });
+    const dataToSign = JSON.stringify({ credentialType: type, claims, ...proofData });
     const signature = crypto.createHash('sha256').update(dataToSign).digest('hex');
 
     return {
