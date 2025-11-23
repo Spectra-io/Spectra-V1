@@ -2,6 +2,7 @@ import { PrismaClient, KycStatus } from '@prisma/client';
 import crypto from 'crypto';
 import { z } from 'zod';
 import type { PersonalInfo } from '@spectra/shared';
+import { zkService } from './zk.service';
 
 const prisma = new PrismaClient();
 
@@ -242,22 +243,34 @@ export class KycService {
 
   // Create a verifiable credential with signature
   async createCredential(userId: string, type: string, claims: any) {
-    // Generate cryptographic proof (simplified for hackathon)
-    const proofData = {
-      type: 'RsaSignature2018',
-      created: new Date().toISOString(),
-      proofPurpose: 'assertionMethod',
-      verificationMethod: 'did:spectra:kyc-global',
-    };
+    let proof: any;
 
-    // Create signature over claims
-    const dataToSign = JSON.stringify({ type, claims, ...proofData });
-    const signature = crypto.createHash('sha256').update(dataToSign).digest('hex');
+    // Generate ZK proof for age verification
+    if (type === 'age_verification') {
+      try {
+        // In production, birthYear would come from encrypted KYC data
+        // For demo, we calculate it from current year assuming over 18
+        const currentYear = new Date().getFullYear();
+        const birthYear = currentYear - 25; // Mock: user is 25 years old
 
-    const proof = {
-      ...proofData,
-      jws: signature,
-    };
+        const zkProof = await zkService.generateAgeProof(birthYear, currentYear, 18);
+
+        proof = {
+          type: 'ZkProof2023',
+          created: new Date().toISOString(),
+          proofPurpose: 'assertionMethod',
+          verificationMethod: 'did:spectra:kyc-global',
+          zkProof: zkProof.proof,
+          publicSignals: zkProof.publicSignals,
+        };
+      } catch (error) {
+        console.error('Failed to generate ZK proof, falling back to signature:', error);
+        proof = this.generateSignatureProof(type, claims);
+      }
+    } else {
+      // For other credential types, use signature-based proof
+      proof = this.generateSignatureProof(type, claims);
+    }
 
     const credential = await prisma.credential.create({
       data: {
@@ -270,6 +283,25 @@ export class KycService {
     });
 
     return credential;
+  }
+
+  // Generate signature-based proof (non-ZK)
+  private generateSignatureProof(type: string, claims: any) {
+    const proofData = {
+      type: 'RsaSignature2018',
+      created: new Date().toISOString(),
+      proofPurpose: 'assertionMethod',
+      verificationMethod: 'did:spectra:kyc-global',
+    };
+
+    // Create signature over claims
+    const dataToSign = JSON.stringify({ type, claims, ...proofData });
+    const signature = crypto.createHash('sha256').update(dataToSign).digest('hex');
+
+    return {
+      ...proofData,
+      jws: signature,
+    };
   }
 
   // Get KYC status
